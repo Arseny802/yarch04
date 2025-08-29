@@ -1,0 +1,135 @@
+name: sharding-repl-cache
+
+services:
+  mongos_router:
+    image: dh-mirror.gitverse.ru/mongo:latest
+    container_name: mongos_router
+    depends_on:
+      - configSrv
+      - shard1
+      - shard2
+    command: [
+      "mongos", "--configdb", "config_server/configSrv:27121",
+      "--bind_ip_all", "--port", "27120"
+    ]
+    ports:
+      - "27120:27120"
+
+  configSrv:
+    image: dh-mirror.gitverse.ru/mongo:latest
+    container_name: configSrv
+    command: [
+      "mongod", "--configsvr", "--replSet", "config_server",
+      "--bind_ip_all", "--port", "27121"
+    ]
+    ports:
+      - "27121:27121"
+    volumes:
+      - config-data:/data/db
+
+  shard1:
+    image: dh-mirror.gitverse.ru/mongo:latest
+    container_name: shard1
+    command: [
+      "mongod", "--shardsvr", "--replSet", "shard1",
+      "--bind_ip_all", "--port", "27130"
+    ]
+    ports:
+      - "27130:27130"
+    volumes:
+      - shard1-data:/data/db
+    depends_on:
+      - shard1b
+      - shard1c
+
+  shard1b:
+    image: dh-mirror.gitverse.ru/mongo:latest
+    container_name: shard1b
+    command: [
+      "mongod", "--shardsvr", "--replSet", "shard1",
+      "--bind_ip_all", "--port", "27131"
+    ]
+    ports:
+      - "27131:27131"
+    volumes:
+      - shard1b-data:/data/db
+
+  shard1c:
+    image: dh-mirror.gitverse.ru/mongo:latest
+    container_name: shard1c
+    command: [
+      "mongod", "--shardsvr", "--replSet", "shard1",
+      "--bind_ip_all", "--port", "27132"
+    ]
+    ports:
+      - "27132:27132"
+    volumes:
+      - shard1c-data:/data/db
+
+  shard2:
+    image: dh-mirror.gitverse.ru/mongo:latest
+    container_name: shard2
+    command: [
+      "mongod", "--shardsvr", "--replSet", "shard2",
+      "--bind_ip_all", "--port", "27140"
+    ]
+    ports:
+      - "27140:27140"
+    volumes:
+      - shard2-data:/data/db
+    depends_on:
+      - shard2b
+      - shard2c
+
+  shard2b:
+    image: dh-mirror.gitverse.ru/mongo:latest
+    container_name: shard2b
+    command: [
+      "mongod", "--shardsvr", "--replSet", "shard2",
+      "--bind_ip_all", "--port", "27141"
+    ]
+    ports:
+      - "27141:27141"
+    volumes:
+      - shard2b-data:/data/db
+
+  shard2c:
+    image: dh-mirror.gitverse.ru/mongo:latest
+    container_name: shard2c
+    command: [
+      "mongod", "--shardsvr", "--replSet", "shard2",
+      "--bind_ip_all", "--port", "27142"
+    ]
+    ports:
+      - "27142:27142"
+    volumes:
+      - shard2c-data:/data/db
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  pymongo_api:
+    container_name: pymongo_api
+    build:
+      context: api_app
+      dockerfile: Dockerfile
+    depends_on:
+      - mongos_router
+    environment:
+      MONGODB_URL: "mongodb://mongos_router:27120"
+      MONGODB_DATABASE_NAME: "somedb"
+      REDIS_URL: "redis://redis:6379"
+    ports:
+      - "8180:8180"
+
+volumes:
+  config-data:
+  shard1-data:
+  shard1b-data:
+  shard1c-data:
+  shard2-data:
+  shard2b-data:
+  shard2c-data:
