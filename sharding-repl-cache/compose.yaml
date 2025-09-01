@@ -2,7 +2,7 @@ name: sharding-repl-cache
 
 services:
   mongos_router:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: dh-mirror.gitverse.ru/mongo:6.0.26
     container_name: mongos_router
     depends_on:
       - configSrv
@@ -16,7 +16,7 @@ services:
       - "27120:27120"
 
   configSrv:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: dh-mirror.gitverse.ru/mongo:6.0.26
     container_name: configSrv
     command: [
       "mongod", "--configsvr", "--replSet", "config_server",
@@ -28,7 +28,7 @@ services:
       - config-data:/data/db
 
   shard1:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: dh-mirror.gitverse.ru/mongo:6.0.26
     container_name: shard1
     command: [
       "mongod", "--shardsvr", "--replSet", "shard1",
@@ -43,7 +43,7 @@ services:
       - shard1c
 
   shard1b:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: dh-mirror.gitverse.ru/mongo:6.0.26
     container_name: shard1b
     command: [
       "mongod", "--shardsvr", "--replSet", "shard1",
@@ -55,7 +55,7 @@ services:
       - shard1b-data:/data/db
 
   shard1c:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: dh-mirror.gitverse.ru/mongo:6.0.26
     container_name: shard1c
     command: [
       "mongod", "--shardsvr", "--replSet", "shard1",
@@ -67,7 +67,7 @@ services:
       - shard1c-data:/data/db
 
   shard2:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: dh-mirror.gitverse.ru/mongo:6.0.26
     container_name: shard2
     command: [
       "mongod", "--shardsvr", "--replSet", "shard2",
@@ -82,7 +82,7 @@ services:
       - shard2c
 
   shard2b:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: dh-mirror.gitverse.ru/mongo:6.0.26
     container_name: shard2b
     command: [
       "mongod", "--shardsvr", "--replSet", "shard2",
@@ -94,7 +94,7 @@ services:
       - shard2b-data:/data/db
 
   shard2c:
-    image: dh-mirror.gitverse.ru/mongo:latest
+    image: dh-mirror.gitverse.ru/mongo:6.0.26
     container_name: shard2c
     command: [
       "mongod", "--shardsvr", "--replSet", "shard2",
