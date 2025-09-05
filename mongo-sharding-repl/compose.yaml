@@ -116,7 +116,7 @@ services:
       MONGODB_URL: "mongodb://mongos_router:27120"
       MONGODB_DATABASE_NAME: "somedb"
     ports:
-      - "8180:8180"
+      - "8080:8080"
 
 volumes:
   config-data:

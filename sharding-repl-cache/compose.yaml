@@ -123,7 +123,7 @@ services:
       MONGODB_DATABASE_NAME: "somedb"
       REDIS_URL: "redis://redis:6379"
     ports:
-      - "8180:8180"
+      - "8080:8080"
 
 volumes:
   config-data:
